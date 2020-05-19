@@ -10,6 +10,7 @@ const cors = require("cors");
 const authRoutes = require("./routes/auth");
 const userRoutes = require("./routes/user");
 const categoryRoutes = require("./routes/category");
+const productRoutes = require("./routes/product");
 //DB Connection
 mongoose.connect(process.env.DATABASE, //variable coming from .env file
  {
@@ -29,6 +30,7 @@ app.use(cors());
 app.use("/api", authRoutes);
 app.use("/api", userRoutes);
 app.use("/api", categoryRoutes);
+app.use("/api", productRoutes);
 
 //Ports
 const port = process.env.PORT || 8000; // env variable from dotenv npm package
