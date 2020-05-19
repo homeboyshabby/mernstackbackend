@@ -52,47 +52,47 @@ exports.updateUser = (req, res) => {
   );
 };
 
-exports.userPurchaseList = (req,res)=>{
-    Order.find({user: req.profile._id})
+exports.userPurchaseList = (req, res) => {
+  Order.find({ user: req.profile._id })
     .populate("user", "_id name")
-    .exec((err,order)=>{
-        if(err){
-            return res.status(400).json({
-                error: "No orders for this user"
-            })
-        }
-        return res.json(order);
-    })
-}
-
-exports.pushOrdersInPurchaseList = (req,res,next)=>{
-    let purchases = []
-    req.body.order.products.forEach(product=>{
-        purchases.push({
-            _id: product._id,
-            name: product.name,
-            description: product.description,
-            category: product.category,
-            quantity: product.quantity,
-            amount: req.body.order.amount,
-            transaction_id: req.body.order.transaction_id
-        })
+    .exec((err, order) => {
+      if (err) {
+        return res.status(400).json({
+          error: "No orders for this user",
+        });
+      }
+      return res.json(order);
     });
-    //now store the list in db
-    User.findByIdAndUpdate(
-        {_id: req.profile._id},
-        {$push: {purchases: purchases}},
-        {new: true},//this new equal to true send a updated object from db
-        (err, purchases)=>{
-            if(err){
-                return res.status(400).json({
-                    error: "Unable to save purchases list"
-                })
-            }
-            return res.json({
-                msg:"order added successfully!"
-            });
-            next();
-        }
-    )
-}
+};
+
+exports.pushOrdersInPurchaseList = (req, res, next) => {
+  let purchases = [];
+  req.body.order.products.forEach((product) => {
+    purchases.push({
+      _id: product._id,
+      name: product.name,
+      description: product.description,
+      category: product.category,
+      quantity: product.quantity,
+      amount: req.body.order.amount,
+      transaction_id: req.body.order.transaction_id,
+    });
+  });
+  //now store the list in db
+  User.findByIdAndUpdate(
+    { _id: req.profile._id },
+    { $push: { purchases: purchases } },
+    { new: true }, //this new equal to true send a updated object from db
+    (err, purchases) => {
+      if (err) {
+        return res.status(400).json({
+          error: "Unable to save purchases list",
+        });
+      }
+      return res.json({
+        msg: "order added successfully!",
+      });
+      next();
+    }
+  );
+};
